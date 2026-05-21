@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Lift Traffic Analysis Tool
 
 A Python-based automation tool developed during my internship at Larsen & Toubro (L&T) for lift traffic analysis calculations.
@@ -93,7 +92,6 @@ Developed as part of internship work at:
 
 **Larsen & Toubro (L&T)**
 
-=======
 # Lift Traffic Analysis Tool
 
 A Python-based automation tool developed during my internship at Larsen & Toubro (L&T) for lift traffic analysis calculations.
@@ -173,5 +171,4 @@ Developed as part of internship work at:
 
 **Larsen & Toubro (L&T)**
 
->>>>>>> 36cb4f236a89dfa1b7fe16ef0c99d76a91b8f516
 ---
