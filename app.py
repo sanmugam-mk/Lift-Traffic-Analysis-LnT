@@ -231,7 +231,7 @@ st.sidebar.divider()
 
 # NEW: Building Type
 
-st.sidebar.subheader("🏗️ Building Standard")
+st.sidebar.subheader("Building Standard")
 
 building_type = st.sidebar.selectbox(
     "Building Type",
@@ -406,7 +406,7 @@ if calculate_button:
 
         st.divider()
 
-        st.subheader(f"🏗️ Building Standard Validation — {building_type} Building")
+        st.subheader(f"Building Standard Validation — {building_type} Building")
 
         validation = validate_building_standard(
             avg_waiting_time,
