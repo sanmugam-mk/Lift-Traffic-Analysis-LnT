@@ -91,6 +91,38 @@ def calculate_lift_traffic(
         "handling_capacity": handling_capacity
     }
 
+
+# BUILDING STANDARD VALIDATION FUNCTION
+
+def validate_building_standard(avg_waiting_time, handling_capacity, building_type):
+
+    if building_type == "High End":
+        wt_ok  = avg_waiting_time <= 30
+        wt_range = "≤ 30 s"
+        hc_ok  = handling_capacity > 8
+        hc_range = "> 8%"
+
+    elif building_type == "Mid End":
+        wt_ok  = 31 <= avg_waiting_time <= 45
+        wt_range = "31 – 45 s"
+        hc_ok  = 6 <= handling_capacity <= 8
+        hc_range = "6% – 8%"
+
+    else:  # Low End
+        wt_ok  = 46 <= avg_waiting_time <= 60
+        wt_range = "46 – 60 s"
+        hc_ok  = 5 <= handling_capacity <= 7
+        hc_range = "5% – 7%"
+
+    return {
+        "wt_ok":    wt_ok,
+        "hc_ok":    hc_ok,
+        "overall_ok": wt_ok and hc_ok,
+        "wt_range": wt_range,
+        "hc_range": hc_range,
+    }
+
+
 # HEADER
 
 st.title("🏢 Lift Traffic Analysis Tool")
@@ -195,6 +227,24 @@ tp = st.sidebar.number_input(
     step=0.1
 )
 
+st.sidebar.divider()
+
+# NEW: Building Type
+
+st.sidebar.subheader("🏗️ Building Standard")
+
+building_type = st.sidebar.selectbox(
+    "Building Type",
+    options=["High End", "Mid End", "Low End"],
+    index=0,
+    help=(
+        "Select the building category to validate results "
+        "against IS/NBC standards (Clause 4.4.1).\n\n"
+        "• High End: Waiting ≤ 30s | Handling > 8%\n"
+        "• Mid End:  Waiting 31–45s | Handling 6–8%\n"
+        "• Low End:  Waiting 46–60s | Handling 5–7%"
+    )
+)
 
 # CALCULATE BUTTON
 
@@ -270,6 +320,9 @@ if calculate_button:
             tp
         )
 
+        avg_waiting_time = results["avg_waiting_time"]
+        handling_capacity = results["handling_capacity"]
+
         st.success("Calculation Completed Successfully")
 
         # TOP METRICS
@@ -285,13 +338,13 @@ if calculate_button:
         with metric2:
             st.metric(
                 "Average Waiting Time",
-                f"{results['avg_waiting_time']:.1f} sec"
+                f"{avg_waiting_time:.1f} sec"
             )
 
         with metric3:
             st.metric(
                 "Handling Capacity",
-                f"{results['handling_capacity']:.1f}"
+                f"{handling_capacity:.1f}"
             )
 
 
@@ -338,14 +391,88 @@ if calculate_button:
 
             st.warning(
                 f"Average Waiting Time = "
-                f"{results['avg_waiting_time']:.1f} sec"
+                f"{avg_waiting_time:.1f} sec"
             )
 
             st.success(
                 f"Handling Capacity = "
-                f"{results['handling_capacity']:.1f}"
+                f"{handling_capacity:.1f}"
             )
 
+
+        # =====================================================
+        # BUILDING STANDARD VALIDATION
+        # =====================================================
+
+        st.divider()
+
+        st.subheader(f"🏗️ Building Standard Validation — {building_type} Building")
+
+        validation = validate_building_standard(
+            avg_waiting_time,
+            handling_capacity,
+            building_type
+        )
+
+        # Waiting Time
+
+        st.markdown("**Average Waiting Time**")
+
+        if validation["wt_ok"]:
+            st.success(
+                f"✅ Average Waiting Time ({avg_waiting_time:.1f} s) "
+                f"is within the limit for {building_type} buildings "
+                f"(standard: {validation['wt_range']})."
+            )
+        else:
+            st.error(
+                f"❌ Average Waiting Time ({avg_waiting_time:.1f} s) "
+                f"exceeds the limit for {building_type} buildings "
+                f"(standard: {validation['wt_range']})."
+            )
+
+        # Handling Capacity
+
+        st.markdown("**Handling Capacity**")
+
+        if validation["hc_ok"]:
+            st.success(
+                f"✅ Handling Capacity ({handling_capacity:.1f}%) "
+                f"meets the requirement for {building_type} buildings "
+                f"(standard: {validation['hc_range']})."
+            )
+        else:
+            st.error(
+                f"❌ Handling Capacity ({handling_capacity:.1f}%) "
+                f"does not meet the requirement for {building_type} buildings "
+                f"(standard: {validation['hc_range']})."
+            )
+
+        # Overall Verdict
+
+        st.markdown("**Overall Compliance Verdict**")
+
+        if validation["overall_ok"]:
+            st.success(
+                f"✅ Design complies with {building_type} residential building standards."
+            )
+        else:
+            st.error(
+                f"❌ Design does not comply with {building_type} residential building standards."
+            )
+
+        # Reference Table
+
+        with st.expander("📋 View IS/NBC Building Standards Reference (Clause 4.4.1)"):
+            st.markdown("""
+| Building Class | Average Waiting Time (s) | Handling Capacity (%) |
+|---|---|---|
+| High End | ≤ 30 | > 8 |
+| Mid End | 31 – 45 | 6 – 8 |
+| Low End | 46 – 60 | 5 – 7 |
+
+*Source: Table 7 & Table 9 — IS/NBC Recommended Quality of Service for Residential Buildings (Clause 4.4.1)*
+""")
 
     except Exception as e:
 
