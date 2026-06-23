@@ -236,14 +236,7 @@ st.sidebar.subheader("Building Standard")
 building_type = st.sidebar.selectbox(
     "Building Type",
     options=["High End", "Mid End", "Low End"],
-    index=0,
-    help=(
-        "Select the building category to validate results "
-        "against IS/NBC standards (Clause 4.4.1).\n\n"
-        "• High End: Waiting ≤ 30s | Handling > 8%\n"
-        "• Mid End:  Waiting 31–45s | Handling 6–8%\n"
-        "• Low End:  Waiting 46–60s | Handling 5–7%"
-    )
+    index=0
 )
 
 # CALCULATE BUTTON
