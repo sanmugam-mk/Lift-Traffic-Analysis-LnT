@@ -105,14 +105,14 @@ def validate_building_standard(avg_waiting_time, handling_capacity, building_typ
     elif building_type == "Mid End":
         wt_ok  = 31 <= avg_waiting_time <= 45
         wt_range = "31 – 45 s"
-        hc_ok  = 6 <= handling_capacity <= 8
-        hc_range = "6% – 8%"
+        hc_ok  = handling_capacity > 6
+        hc_range = "> 6%"
 
     else:  # Low End
         wt_ok  = 46 <= avg_waiting_time <= 60
         wt_range = "46 – 60 s"
-        hc_ok  = 5 <= handling_capacity <= 7
-        hc_range = "5% – 7%"
+        hc_ok  = handling_capacity > 5
+        hc_range = "> 5%"
 
     return {
         "wt_ok":    wt_ok,
@@ -121,7 +121,6 @@ def validate_building_standard(avg_waiting_time, handling_capacity, building_typ
         "wt_range": wt_range,
         "hc_range": hc_range,
     }
-
 
 # HEADER
 
@@ -461,8 +460,8 @@ if calculate_button:
 | Building Class | Average Waiting Time (s) | Handling Capacity (%) |
 |---|---|---|
 | High End | ≤ 30 | > 8 |
-| Mid End | 31 – 45 | 6 – 8 |
-| Low End | 46 – 60 | 5 – 7 |
+| Mid End | 31 – 45 | > 6 |
+| Low End | 46 – 60 | > 5 |
 
 *Source: Table 7 & Table 9 — IS/NBC Recommended Quality of Service for Residential Buildings (Clause 4.4.1)*
 """)
